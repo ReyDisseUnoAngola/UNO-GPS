@@ -3,219 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>UNO GPS</title>
-
-  <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <title>UNO GPS - Teste</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
       background: #07111f;
       color: white;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 25px 18px;
-    }
-
-    .logo {
       text-align: center;
-      font-size: 38px;
-      font-weight: bold;
+      padding: 40px 20px;
+    }
+
+    h1 {
       color: #20e080;
-      margin-top: 15px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #aab7c8;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background: #101d30;
-      padding: 22px;
-      border-radius: 20px;
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      margin-top: 16px;
-      margin-bottom: 7px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #30425d;
-      background: #091525;
-      color: white;
-      font-size: 16px;
     }
 
     button {
-      width: 100%;
-      margin-top: 20px;
-      padding: 15px;
+      padding: 16px 25px;
       border: none;
       border-radius: 10px;
       background: #20e080;
-      color: #06140d;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: bold;
-      cursor: pointer;
-    }
-
-    #status {
-      text-align: center;
-      margin-top: 18px;
-      color: #20e080;
-    }
-
-    #map {
-      height: 350px;
-      width: 100%;
       margin-top: 20px;
-      border-radius: 15px;
-      overflow: hidden;
-      display: none;
     }
 
-    .coordinates {
-      display: none;
-      margin-top: 15px;
-      padding: 15px;
-      background: #091525;
-      border-radius: 10px;
-      line-height: 1.7;
-      font-family: monospace;
-    }
-
-    .warning {
-      margin-top: 18px;
-      font-size: 13px;
-      color: #9fb0c7;
-      line-height: 1.5;
+    #resultado {
+      margin-top: 25px;
+      font-size: 20px;
+      color: #20e080;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+  <h1>UNO GPS</h1>
 
-    <div class="logo">
-      UNO GPS
-    </div>
+  <p>Teste do sistema</p>
 
-    <div class="subtitle">
-      Localização segura com autorização
-    </div>
+  <button onclick="testarBotao()">
+    📍 TESTAR BOTÃO
+  </button>
 
-    <div class="card">
-
-      <h2>📍 Minha localização</h2>
-
-      <label>Número de telemóvel</label>
-
-      <input
-        type="tel"
-        id="phone"
-        placeholder="+244 9XX XXX XXX"
-      >
-
-      <label>E-mail</label>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="exemplo@email.com"
-      >
-
-      <button onclick="getLocation()">
-        📍 PARTILHAR MINHA LOCALIZAÇÃO
-      </button>
-
-      <div id="status"></div>
-
-      <div id="map"></div>
-
-      <div id="coordinates" class="coordinates"></div>
-
-      <div class="warning">
-        🔐 A localização só é obtida depois da autorização
-        do utilizador. O número de telefone e o e-mail não
-        permitem localizar uma pessoa secretamente.
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- Leaflet JavaScript -->
-
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-  </script>
-
+  <div id="resultado"></div>
 
   <script>
+    function testarBotao() {
 
-    let map;
-    let marker;
+      document.getElementById("resultado").innerText =
+        "🔥 BOTÃO FUNCIONOU! O UNO GPS está respondendo.";
+    }
+  </script>
 
-    function getLocation() {
-
-      const phone =
-        document.getElementById("phone").value.trim();
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const status =
-        document.getElementById("status");
-
-      const mapElement =
-        document.getElementById("map");
-
-      const coordinates =
-        document.getElementById("coordinates");
-
-
-      if (phone === "" || email === "") {
-
-        status.innerText =
-          "⚠️ Preencha o número de telemóvel e o e-mail.";
-
-        return;
-      }
-
-
-      if (!navigator.geolocation) {
-
-        status.innerText =
-          "❌ Este navegador não suporta localização GPS.";
-
-        return;
-      }
-
-
-      status.inner
+</body>
+</html>

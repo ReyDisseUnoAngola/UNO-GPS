@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt">
+<!DOCTYPE html><html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UNO GPS - Teste</title>
-
-  <style>
+  <title>UNO GPS</title>  <style>
     body {
       font-family: Arial, sans-serif;
       background: #07111f;
@@ -19,42 +16,125 @@
     }
 
     button {
+      display: block;
+      width: 100%;
+      max-width: 350px;
+      margin: 20px auto;
       padding: 16px 25px;
       border: none;
       border-radius: 10px;
       background: #20e080;
+      color: #07111f;
       font-size: 18px;
       font-weight: bold;
-      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
     }
 
     #resultado {
       margin-top: 25px;
-      font-size: 20px;
+      font-size: 18px;
       color: #20e080;
+      line-height: 1.6;
     }
-  </style>
-</head>
 
-<body>
+    .caixa {
+      margin-top: 25px;
+      padding: 20px;
+      border: 1px solid #20e080;
+      border-radius: 12px;
+      background: #0b1b2d;
+    }
+  </style></head><body>  <h1>UNO GPS</h1>  <p>Localização segura com autorização</p>  <!-- BOTÃO DE TESTE -->  <button onclick="testarBotao()">
+    🔥 TESTAR BOTÃO
+  </button>  <!-- BOTÃO DE LOCALIZAÇÃO -->  <button onclick="partilharLocalizacao()">
+    📍 PARTILHAR MINHA LOCALIZAÇÃO
+  </button>  <div id="resultado"></div>  <script>
 
-  <h1>UNO GPS</h1>
-
-  <p>Teste do sistema</p>
-
-  <button onclick="testarBotao()">
-    📍 TESTAR BOTÃO
-  </button>
-
-  <div id="resultado"></div>
-
-  <script>
+    // Teste do botão
     function testarBotao() {
 
       document.getElementById("resultado").innerText =
         "🔥 BOTÃO FUNCIONOU! O UNO GPS está respondendo.";
     }
-  </script>
 
-</body>
+
+    // Localização
+    function partilharLocalizacao() {
+
+      const resultado = document.getElementById("resultado");
+
+      resultado.innerText =
+        "📍 A solicitar autorização para obter a sua localização...";
+
+      // Verificar se o navegador suporta localização
+      if (!navigator.geolocation) {
+
+        resultado.innerText =
+          "❌ Este navegador não suporta localização.";
+
+        return;
+      }
+
+      // Pedir autorização e obter localização
+      navigator.geolocation.getCurrentPosition(
+
+        function(posicao) {
+
+          const latitude = posicao.coords.latitude;
+          const longitude = posicao.coords.longitude;
+          const precisao = posicao.coords.accuracy;
+
+          resultado.innerHTML = `
+            <div class="caixa">
+              <strong>📍 LOCALIZAÇÃO AUTORIZADA</strong><br><br>
+
+              Latitude: ${latitude}<br>
+              Longitude: ${longitude}<br>
+              Precisão aproximada: ${Math.round(precisao)} metros
+
+              <br><br>
+
+              🔐 A localização foi obtida com autorização.
+            </div>
+          `;
+        },
+
+        function(erro) {
+
+          if (erro.code === 1) {
+
+            resultado.innerText =
+              "❌ Permissão de localização recusada.";
+
+          } else if (erro.code === 2) {
+
+            resultado.innerText =
+              "❌ Não foi possível obter a localização.";
+
+          } else if (erro.code === 3) {
+
+            resultado.innerText =
+              "❌ O pedido de localização demorou demasiado.";
+
+          } else {
+
+            resultado.innerText =
+              "❌ Ocorreu um erro ao obter a localização.";
+          }
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        }
+
+      );
+    }
+
+  </script></body>
 </html>

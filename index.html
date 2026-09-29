@@ -3,9 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>UNO GPS</title>
 
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -14,9 +25,9 @@
     }
 
     .container {
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
-      padding: 30px 20px;
+      padding: 25px 18px;
     }
 
     .logo {
@@ -24,31 +35,34 @@
       font-size: 38px;
       font-weight: bold;
       color: #20e080;
-      margin-top: 30px;
+      margin-top: 15px;
     }
 
     .subtitle {
       text-align: center;
       color: #aab7c8;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .card {
       background: #101d30;
-      padding: 25px;
+      padding: 22px;
       border-radius: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
     }
 
     label {
       display: block;
-      margin-top: 18px;
-      margin-bottom: 8px;
+      margin-top: 16px;
+      margin-bottom: 7px;
     }
 
     input {
       width: 100%;
       padding: 14px;
-      box-sizing: border-box;
       border-radius: 10px;
       border: 1px solid #30425d;
       background: #091525;
@@ -58,7 +72,7 @@
 
     button {
       width: 100%;
-      margin-top: 25px;
+      margin-top: 20px;
       padding: 15px;
       border: none;
       border-radius: 10px;
@@ -70,18 +84,35 @@
     }
 
     #status {
-      margin-top: 20px;
-      color: #20e080;
       text-align: center;
+      margin-top: 18px;
+      color: #20e080;
     }
 
-    #location {
-      display: none;
+    #map {
+      height: 350px;
+      width: 100%;
       margin-top: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .coordinates {
+      display: none;
+      margin-top: 15px;
       padding: 15px;
       background: #091525;
       border-radius: 10px;
+      line-height: 1.7;
       font-family: monospace;
+    }
+
+    .warning {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #9fb0c7;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -90,7 +121,9 @@
 
   <div class="container">
 
-    <div class="logo">UNO GPS</div>
+    <div class="logo">
+      UNO GPS
+    </div>
 
     <div class="subtitle">
       Localização segura com autorização
@@ -98,9 +131,10 @@
 
     <div class="card">
 
-      <h2>Minha localização</h2>
+      <h2>📍 Minha localização</h2>
 
       <label>Número de telemóvel</label>
+
       <input
         type="tel"
         id="phone"
@@ -108,6 +142,7 @@
       >
 
       <label>E-mail</label>
+
       <input
         type="email"
         id="email"
@@ -120,84 +155,67 @@
 
       <div id="status"></div>
 
-      <div id="location"></div>
+      <div id="map"></div>
+
+      <div id="coordinates" class="coordinates"></div>
+
+      <div class="warning">
+        🔐 A localização só é obtida depois da autorização
+        do utilizador. O número de telefone e o e-mail não
+        permitem localizar uma pessoa secretamente.
+      </div>
 
     </div>
 
   </div>
 
-<script>
 
-function getLocation() {
+  <!-- Leaflet JavaScript -->
 
-  const phone = document.getElementById("phone").value;
-  const email = document.getElementById("email").value;
-  const status = document.getElementById("status");
-  const locationBox = document.getElementById("location");
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
 
-  if (phone === "" || email === "") {
 
-    status.innerText =
-      "⚠️ Preencha o número de telemóvel e o e-mail.";
+  <script>
 
-    return;
-  }
+    let map;
+    let marker;
 
-  if (!navigator.geolocation) {
+    function getLocation() {
 
-    status.innerText =
-      "❌ Este dispositivo não suporta GPS.";
+      const phone =
+        document.getElementById("phone").value.trim();
 
-    return;
-  }
+      const email =
+        document.getElementById("email").value.trim();
 
-  status.innerText =
-    "📍 A solicitar autorização de localização...";
+      const status =
+        document.getElementById("status");
 
-  navigator.geolocation.getCurrentPosition(
+      const mapElement =
+        document.getElementById("map");
 
-    function(position) {
+      const coordinates =
+        document.getElementById("coordinates");
 
-      const latitude =
-        position.coords.latitude.toFixed(6);
 
-      const longitude =
-        position.coords.longitude.toFixed(6);
+      if (phone === "" || email === "") {
 
-      const accuracy =
-        Math.round(position.coords.accuracy);
+        status.innerText =
+          "⚠️ Preencha o número de telemóvel e o e-mail.";
 
-      status.innerText =
-        "✅ Localização autorizada!";
+        return;
+      }
 
-      locationBox.style.display = "block";
 
-      locationBox.innerHTML =
-        "Latitude: " + latitude +
-        "<br>Longitude: " + longitude +
-        "<br>Precisão: aproximadamente " +
-        accuracy + " metros";
+      if (!navigator.geolocation) {
 
-    },
+        status.innerText =
+          "❌ Este navegador não suporta localização GPS.";
 
-    function() {
+        return;
+      }
 
-      status.innerText =
-        "❌ Não foi possível obter a localização. Verifique a permissão do GPS.";
 
-    },
-
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
-    }
-
-  );
-
-}
-
-</script>
-
-</body>
-</html>
+      status.inner

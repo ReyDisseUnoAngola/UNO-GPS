@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNO GPS</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #07111f;
+      color: white;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 38px;
+      font-weight: bold;
+      color: #20e080;
+      margin-top: 30px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aab7c8;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #101d30;
+      padding: 25px;
+      border-radius: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #30425d;
+      background: #091525;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #20e080;
+      color: #06140d;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 20px;
+      color: #20e080;
+      text-align: center;
+    }
+
+    #location {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #091525;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">UNO GPS</div>
+
+    <div class="subtitle">
+      Localização segura com autorização
+    </div>
+
+    <div class="card">
+
+      <h2>Minha localização</h2>
+
+      <label>Número de telemóvel</label>
+      <input
+        type="tel"
+        id="phone"
+        placeholder="+244 9XX XXX XXX"
+      >
+
+      <label>E-mail</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="exemplo@email.com"
+      >
+
+      <button onclick="getLocation()">
+        📍 PARTILHAR MINHA LOCALIZAÇÃO
+      </button>
+
+      <div id="status"></div>
+
+      <div id="location"></div>
+
+    </div>
+
+  </div>
+
+<script>
+
+function getLocation() {
+
+  const phone = document.getElementById("phone").value;
+  const email = document.getElementById("email").value;
+  const status = document.getElementById("status");
+  const locationBox = document.getElementById("location");
+
+  if (phone === "" || email === "") {
+
+    status.innerText =
+      "⚠️ Preencha o número de telemóvel e o e-mail.";
+
+    return;
+  }
+
+  if (!navigator.geolocation) {
+
+    status.innerText =
+      "❌ Este dispositivo não suporta GPS.";
+
+    return;
+  }
+
+  status.innerText =
+    "📍 A solicitar autorização de localização...";
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      const latitude =
+        position.coords.latitude.toFixed(6);
+
+      const longitude =
+        position.coords.longitude.toFixed(6);
+
+      const accuracy =
+        Math.round(position.coords.accuracy);
+
+      status.innerText =
+        "✅ Localização autorizada!";
+
+      locationBox.style.display = "block";
+
+      locationBox.innerHTML =
+        "Latitude: " + latitude +
+        "<br>Longitude: " + longitude +
+        "<br>Precisão: aproximadamente " +
+        accuracy + " metros";
+
+    },
+
+    function() {
+
+      status.innerText =
+        "❌ Não foi possível obter a localização. Verifique a permissão do GPS.";
+
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+
+  );
+
+}
+
+</script>
+
+</body>
+</html>
